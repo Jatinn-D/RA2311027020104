@@ -1,16 +1,25 @@
-import { useEffect } from 'react';
-import { Log } from 'logging_middleware';
+import React, { useEffect, useState } from 'react';
+import { getTopPriorityNotifications, Notification } from './services/notificationService';
 
 function App() {
+  const [topNotifications, setTopNotifications] = useState<Notification[]>([]);
+
   useEffect(() => {
-    console.log("MY TOKEN IS:", process.env.REACT_APP_ACCESS_TOKEN);
-    Log("info", "page", "Application started and testing logger");
+    const loadData = async () => {
+      const data = await getTopPriorityNotifications();
+      setTopNotifications(data);
+    };
+    loadData();
   }, []);
 
   return (
-    <div>
-      <h1>Campus Notifications</h1>
+    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
+      <h1>Top 10 Priority Notifications</h1>
+      <pre style={{ background: '#f4f4f4', padding: '15px', borderRadius: '5px' }}>
+        {JSON.stringify(topNotifications, null, 2)}
+      </pre>
     </div>
   );
 }
+
 export default App;

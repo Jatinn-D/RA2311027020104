@@ -1,6 +1,6 @@
 const Log = async (level, pkg, message) => {
   const accessToken = process.env.REACT_APP_ACCESS_TOKEN; 
-  const endpoint = "http://20.207.122.201/evaluation-service/logs";
+  const endpoint = "/evaluation-service/logs";
 
   if (!accessToken) return null; 
 
