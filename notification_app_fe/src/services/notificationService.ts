@@ -65,3 +65,37 @@ export const getTopPriorityNotifications = async (): Promise<Notification[]> => 
     return [];
   }
 };
+
+export const getAllNotifications = async (page: number, limit: number, type: string): Promise<Notification[]> => {
+  const token = process.env.REACT_APP_ACCESS_TOKEN || process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+  
+  // Construct URL with query parameters
+  let endpoint = `/evaluation-service/notifications?page=${page}&limit=${limit}`;
+  if (type !== "All") {
+    endpoint += `&notification_type=${type}`;
+  }
+
+  try {
+    Log("info", "api", `Fetching page ${page} with type ${type}`);
+
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      Log("error", "api", "Failed to fetch paginated notifications");
+      return [];
+    }
+
+    const data = await response.json();
+    Log("info", "utils", `Successfully fetched ${data.notifications?.length || 0} notifications`);
+    return data.notifications || [];
+
+  } catch (error) {
+    Log("error", "api", "Network error on paginated fetch");
+    return [];
+  }
+};
